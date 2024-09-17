@@ -1,0 +1,9 @@
+com\allen\icemaker\statemachine\Off.class
+com\allen\icemaker\IceMaker.class
+com\allen\icemaker\statemachine\State.class
+com\allen\icemaker\devices\DigitalOutput.class
+com\allen\icemaker\statemachine\BinFull.class
+com\allen\icemaker\statemachine\Clean.class
+com\allen\icemaker\statemachine\Initial.class
+com\allen\icemaker\statemachine\Production.class
+com\allen\icemaker\statemachine\Harvest.class
