@@ -1,15 +1,17 @@
-package com.allen.icemaker;
+package com.camaro4life18.icemaker;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.allen.icemaker.statemachine.BinFull;
-import com.allen.icemaker.statemachine.Clean;
-import com.allen.icemaker.statemachine.Harvest;
-import com.allen.icemaker.statemachine.Initial;
-import com.allen.icemaker.statemachine.Off;
-import com.allen.icemaker.statemachine.Production;
-import com.allen.icemaker.statemachine.State;
+import com.camaro4life18.icemaker.statemachine.BinFull;
+import com.camaro4life18.icemaker.statemachine.Clean;
+import com.camaro4life18.icemaker.statemachine.Harvest;
+import com.camaro4life18.icemaker.statemachine.Initial;
+import com.camaro4life18.icemaker.statemachine.Off;
+import com.camaro4life18.icemaker.statemachine.Production;
+import com.camaro4life18.icemaker.statemachine.State;
+import com.pi4j.Pi4J;
+import com.pi4j.context.Context;
 
 public class IceMaker {
 	public static Logger logger = LogManager.getLogger(IceMaker.class.getName());

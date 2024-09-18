@@ -1,4 +1,4 @@
-package com.allen.icemaker.statemachine;
+package com.camaro4life18.icemaker.statemachine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,13 +8,7 @@ public class Off extends State{
 	
 	public void enter() {
 		logger.debug("Entering Off State");
-		//TODO turn off circulation pump
-		//TODO turn off condensor fan
-		//TODO turn off hot gas solenoid
-		//TODO turn off drain solenoid
-		//TODO turn off water solenoid
-		//TODO turn off compressor
-		//TODO turn off grid cutter
+		this.everythingOff();
 	}
 	public void update() throws InterruptedException {
 		logger.debug("Doing BOff State Stuff");

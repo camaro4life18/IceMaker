@@ -1,4 +1,4 @@
-package com.allen.icemaker.statemachine;
+package com.camaro4life18.icemaker.statemachine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,16 +8,16 @@ public class Production extends State {
 	
 	public void enter() {
 		logger.debug("Entering Production State");
-		//TODO turn on circulation pump
-		//TODO turn on condensor fan
-		//TODO turn off hot gas solenoid
-		//TODO turn on compressor relay
+		this.waterPump.on();
+		this.fan.on();
+		this.hotGas.off();
+		this.compressor.on();
 	}
 	public void update() throws InterruptedException {
 		logger.debug("Doing Production State Stuff");
 		
 		Thread.sleep(2100000);
-		//TODO turn off grid cutter
+		this.gridCutter.off();
 		
 		while(true) {
 			//TODO get evap temp

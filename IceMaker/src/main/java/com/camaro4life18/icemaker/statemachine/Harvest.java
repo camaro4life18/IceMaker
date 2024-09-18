@@ -1,4 +1,4 @@
-package com.allen.icemaker.statemachine;
+package com.camaro4life18.icemaker.statemachine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,21 +9,21 @@ public class Harvest extends State{
 	public void enter() throws InterruptedException
 	{
 		logger.debug("Entering Harvest State");
-		//TODO Turn off circulation pump
-		//TODO Turn off compressor fan
-		//TODO enable hot gas solenoid
-		//TODO enable grid cutter
+		this.waterPump.off();
+		this.fan.off();
+		this.hotGas.on();
+		this.gridCutter.on();
 	}
 	public void update() throws InterruptedException {
 		logger.debug("Doing Harvest State Stuff");
 		
-		//TODO enable drain solenoid
+		this.drain.on();
 		Thread.sleep(45000);
-		//TODO disable drain solenoid
+		this.drain.off();
 		
-		//TODO enable water solenoid
+		this.water.on();
 		Thread.sleep(120000);
-		//TODO disable water solenoid
+		this.water.off();
 		
 		while(true) {
 			//TODO get evap temp

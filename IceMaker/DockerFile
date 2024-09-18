@@ -1,0 +1,7 @@
+FROM openjdk:11-alpine
+
+COPY target/*.jar /app/
+
+WORKDIR /app
+
+CMD ["java", "-jar", "your-application.jar"]

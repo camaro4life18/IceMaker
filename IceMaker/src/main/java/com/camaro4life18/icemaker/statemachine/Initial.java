@@ -1,4 +1,4 @@
-package com.allen.icemaker.statemachine;
+package com.camaro4life18.icemaker.statemachine;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,10 +9,10 @@ public class Initial extends State{
 	public void enter() throws InterruptedException
 	{
 		logger.debug("Entering Initial State");
-		//TODO Turn off all devices
+		this.everythingOff();
 		
 		//Wait 9 minutes for Compressor Safety
-		//Thread.sleep(540000);
+		Thread.sleep(540000);
 	}
 	public void update() throws InterruptedException {
 		logger.debug("Doing Initial State Stuff");
@@ -24,12 +24,12 @@ public class Initial extends State{
 			return;
 		}
 		
-		//TODO Turn on Fan
-		//TODO Turn on Compressor
+		this.fan.on();
+		this.compressor.on();
 		
-		//TODO Turn on water solenoid
+		this.water.on();
 		//Thread.sleep(90000);
-		//TODO Turn off water solenoid
+		this.water.off();
 		
 		//Loop until the evaporator temp is at or below harvest setpoint
 		int evaptemp = 10;
