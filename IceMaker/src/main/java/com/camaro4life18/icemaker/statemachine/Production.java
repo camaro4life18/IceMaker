@@ -7,22 +7,22 @@ public class Production extends State {
 	private Logger logger = LogManager.getLogger(Production.class.getName());
 	
 	public void enter() {
-		logger.debug("Entering Production State");
+		logger.info("Entering Production State");
 		this.waterPump.on();
 		this.fan.on();
 		this.hotGas.off();
 		this.compressor.on();
 	}
 	public void update() throws InterruptedException {
-		logger.debug("Doing Production State Stuff");
+		logger.debug("Cutting Ice for 35mins");
+		
 		
 		Thread.sleep(2100000);
 		this.gridCutter.off();
 		
+		logger.debug("Waiting on ice tray temp");
 		while(true) {
-			//TODO get evap temp
-			int evap = 20;
-			if(evap <= 11) {
+			if(evapTemp.getTemp() <= 11) {
 				current = harvest;
 				return;
 			}

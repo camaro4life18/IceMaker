@@ -7,7 +7,7 @@ public class Off extends State{
 	private Logger logger = LogManager.getLogger(Production.class.getName());
 	
 	public void enter() {
-		logger.debug("Entering Off State");
+		logger.info("Entering Off State");
 		this.everythingOff();
 	}
 	public void update() throws InterruptedException {
@@ -15,7 +15,7 @@ public class Off extends State{
 		
 		while(true) {
 			//TODO get switch state
-			boolean switchstate = false;
+			boolean switchstate = true;
 			
 			if(switchstate == true) {
 				current = production;

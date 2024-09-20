@@ -5,21 +5,19 @@ import org.apache.logging.log4j.Logger;
 
 public class Initial extends State{
 	private Logger logger = LogManager.getLogger(Initial.class.getName());
-	
+
 	public void enter() throws InterruptedException
 	{
-		logger.debug("Entering Initial State");
+		logger.info("Entering Initial State");
 		this.everythingOff();
 		
-		//Wait 9 minutes for Compressor Safety
+		logger.info("Waiting 9 minutes for compressor safety");
 		Thread.sleep(540000);
 	}
 	public void update() throws InterruptedException {
 		logger.debug("Doing Initial State Stuff");
-		
-		//TODO Get Bin Temp
-		int bintemp = 30;
-		if(bintemp <= 25) {
+
+		if(binTemp.getTemp() <= 25) {
 			current = binfull;
 			return;
 		}
@@ -28,13 +26,12 @@ public class Initial extends State{
 		this.compressor.on();
 		
 		this.water.on();
-		//Thread.sleep(90000);
+		Thread.sleep(90000);
 		this.water.off();
+		this.waterPump.on();
 		
-		//Loop until the evaporator temp is at or below harvest setpoint
-		int evaptemp = 10;
 		while(true) {
-			if(evaptemp <= 11) {
+			if(evapTemp.getTemp() <= 11) {
 				current = harvest;
 				return;
 			}

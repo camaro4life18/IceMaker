@@ -8,7 +8,8 @@ public class Harvest extends State{
 	
 	public void enter() throws InterruptedException
 	{
-		logger.debug("Entering Harvest State");
+		logger.info("Entering Harvest State");
+		
 		this.waterPump.off();
 		this.fan.off();
 		this.hotGas.on();
@@ -26,16 +27,11 @@ public class Harvest extends State{
 		this.water.off();
 		
 		while(true) {
-			//TODO get evap temp
-			int evap = 20;
-			//TODO get bin temp
-			int bin = 45;
-			
-			if(bin <= 35) {
+			if(binTemp.getTemp() <= 35) {
 				current = binfull;
 				return;
 			}
-			else if(evap >= 45) {
+			else if(evapTemp.getTemp() >= 45) {
 				current = production;
 				return;
 			}

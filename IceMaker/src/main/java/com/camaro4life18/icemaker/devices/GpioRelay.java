@@ -28,22 +28,25 @@ public class GpioRelay {
 	}
 	
 	public void on() {
-		if(!this.relay.isLow()) {
-			this.relay.low();
-			relayStatus = true;
-			logger.info(name + " turned on");
-		}
+		this.relay.low();
+		relayStatus = true;
+		logger.info(name + " turned on");
 	}
 	
 	public void off() {
-		if(!this.relay.isHigh()) {
-			this.relay.high();
-			relayStatus = false;
-			logger.info(name + " turned off");
-		}
+		this.relay.high();
+		relayStatus = false;
+		logger.info(name + " turned off");
 	}
 	
 	public boolean status() {
+		if(relayStatus) {
+			logger.info(name + " is on");
+		}
+		else {
+
+			logger.info(name + " is off");
+		}
 		return relayStatus;
 	}
 }

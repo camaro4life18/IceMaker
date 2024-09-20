@@ -7,7 +7,8 @@ public class BinFull extends State{
 	private Logger logger = LogManager.getLogger(Production.class.getName());
 	
 	public void enter() {
-		logger.debug("Entering Bin Full State");
+		logger.info("Entering Bin Full State");
+		
 		this.waterPump.off();
 		this.fan.off();
 		this.hotGas.off();
@@ -16,16 +17,15 @@ public class BinFull extends State{
 		this.compressor.off();
 	}
 	public void update() throws InterruptedException {
-		logger.debug("Doing Bin Full State Stuff");
+		logger.debug("Finish cutting ice for 35mins");
 		
 		Thread.sleep(2100000);
 		this.gridCutter.off();
 		
 		while(true) {
-			//TODO get bin temperature
-			int bintemp = 45;
-			if(bintemp >= 43) {
-				current = production;
+			logger.debug("Wait for Bin temp to reach 43F");
+			if(binTemp.getTemp() >= 43) {
+				current = initial;
 				return;
 			}
 		}
