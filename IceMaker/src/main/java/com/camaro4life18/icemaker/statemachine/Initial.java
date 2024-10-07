@@ -3,40 +3,42 @@ package com.camaro4life18.icemaker.statemachine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.camaro4life18.icemaker.Utils;
+
 public class Initial extends State{
-	private Logger logger = LogManager.getLogger(Initial.class.getName());
+	private Logger logger = LogManager.getLogger(Initial.class);
 
-	public void enter() throws InterruptedException
-	{
-		logger.info("Entering Initial State");
-		this.everythingOff();
+	public void run() throws InterruptedException {
+		logger.info("Running Initial State");		
+		Utils.initializeProperties();
 		
-		logger.info("Waiting 9 minutes for compressor safety");
-		Thread.sleep(540000);
-	}
-	public void update() throws InterruptedException {
-		logger.debug("Doing Initial State Stuff");
+		if(!onSwitch.isOn()) {
+			current = off;
+			return;
+		}
 
-		if(binTemp.getTemp() <= 25) {
+		if(binTemp.getTemp() <= Utils.getStopIce()) {
 			current = binfull;
 			return;
 		}
-		
+
+		compressorOn();
 		this.fan.on();
-		this.compressor.on();
-		
+			
 		this.water.on();
-		Thread.sleep(90000);
+		Thread.sleep(Utils.getWaterFillTime());
 		this.water.off();
 		this.waterPump.on();
 		
+		//Wait for water to run over evap tray. On BinFull -> Initial, the evap tray is cooling off faster than the water fill.
+		Thread.sleep(60000);
+		
+		logger.info("Waiting on evap temp");
 		while(true) {
-			if(evapTemp.getTemp() <= 11) {
+			if(evapTemp.getTemp() <= Utils.getHarvestTemp()) {
 				current = harvest;
 				return;
 			}
 		}
-		
-		
 	}
 }

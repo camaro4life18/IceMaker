@@ -12,7 +12,6 @@ public class GpioSwitch {
 	private static Logger logger = LogManager.getLogger(GpioRelay.class);
 	
 	private DigitalInput gswitch = null;
-	private boolean switchStatus = false;
 	private String name;
 	
 	public GpioSwitch(Context pi4j, String gpioPin, String name) {
@@ -27,9 +26,8 @@ public class GpioSwitch {
 	}
 	
 	public boolean isOn() {
-		if(gswitch.isOn()) {
-			logger.info(this.name + " is switched on");
-		}
+		logger.info(this.name + "is " + gswitch.isOn()
+		);
 		return gswitch.isOn();
 	}
 }

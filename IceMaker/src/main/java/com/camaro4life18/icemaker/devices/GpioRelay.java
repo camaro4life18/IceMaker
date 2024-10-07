@@ -23,7 +23,11 @@ public class GpioRelay {
 				.shutdown(DigitalState.HIGH)
 				.initial(DigitalState.HIGH)
 				.provider("pigpio-digital-output");
-		this.relay = pi4j.create(relayConfig);
+		try{
+			this.relay = pi4j.create(relayConfig);
+		}catch(Exception e) {
+			logger.error(e.getMessage());
+		}
 		
 	}
 	

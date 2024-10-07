@@ -2,6 +2,7 @@ package com.camaro4life18.icemaker.devices;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.text.DecimalFormat;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +23,10 @@ public class TempSensor extends Thread{
 	public double getTemp() {
 		String temp = readFile(filePath + "/temperature");
 		Double celsius = Double.parseDouble(temp) / 1000;
-		Double farenheit = (celsius * 1.8) + 32;
-			
+		DecimalFormat df = new DecimalFormat("####0.00");
+		
+		Double farenheit = Double.parseDouble(df.format((celsius * 1.8) + 32));
+
 		logger.debug("Temp Sensor - " + this.sensorName + " - is: " + farenheit);
 		return farenheit;
 	}

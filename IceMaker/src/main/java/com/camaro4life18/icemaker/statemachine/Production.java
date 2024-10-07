@@ -3,29 +3,35 @@ package com.camaro4life18.icemaker.statemachine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Production extends State {
-	private Logger logger = LogManager.getLogger(Production.class.getName());
+import com.camaro4life18.icemaker.Utils;
+
+public class Production extends State{
+	private Logger logger = LogManager.getLogger(Production.class);
 	
-	public void enter() {
+	public void run() throws InterruptedException {		
 		logger.info("Entering Production State");
-		this.waterPump.on();
+		Utils.initializeProperties();
+		if(!onSwitch.isOn()) {
+			current = off;
+			return;
+		}
+
 		this.fan.on();
 		this.hotGas.off();
-		this.compressor.on();
-	}
-	public void update() throws InterruptedException {
-		logger.debug("Cutting Ice for 35mins");
 		
+		this.water.on();
+		Thread.sleep(Utils.getWaterFillTime());
+		this.water.off();
 		
-		Thread.sleep(2100000);
-		this.gridCutter.off();
+		this.waterPump.on();
 		
-		logger.debug("Waiting on ice tray temp");
+		logger.info("Waiting on evap temp");
 		while(true) {
-			if(evapTemp.getTemp() <= 11) {
+			if(evapTemp.getTemp() <= Utils.getHarvestTemp()) {
 				current = harvest;
 				return;
 			}
+			Thread.sleep(10000);
 		}
 	}
 }

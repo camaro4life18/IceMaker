@@ -2,9 +2,11 @@ D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\sta
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\statemachine\Off.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\statemachine\Harvest.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\statemachine\Initial.java
+D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\devices\GpioSwitch.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\IceMaker.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\statemachine\BinFull.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\statemachine\Clean.java
+D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\Utils.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\devices\GpioRelay.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\statemachine\Production.java
 D:\Git workspaces\IceMaker\IceMaker\src\main\java\com\camaro4life18\icemaker\devices\TempSensor.java

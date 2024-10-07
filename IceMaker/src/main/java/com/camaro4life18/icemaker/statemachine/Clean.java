@@ -3,19 +3,19 @@ package com.camaro4life18.icemaker.statemachine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.camaro4life18.icemaker.Utils;
+
 public class Clean extends State{
-	private Logger logger = LogManager.getLogger(Production.class.getName());
+	private Logger logger = LogManager.getLogger(Clean.class);
 	
-	public void enter() {
-		logger.info("Entering Clean State");
+	public void run() throws InterruptedException {
+		logger.info("Running clean cycle");
+		Utils.initializeProperties();
 		this.everythingOff();
-	}
-	public void update() throws InterruptedException {
-		logger.debug("Running clean cycle");
 		
-		//this.water.on();
-		//Thread.sleep(180000);
-		//this.water.off();
+		this.water.on();
+		Thread.sleep(180000);
+		this.water.off();
 		
 		this.waterPump.on();
 		Thread.sleep(1800000);
@@ -37,10 +37,6 @@ public class Clean extends State{
 		Thread.sleep(75000);
 		this.drain.off();
 		
-		this.water.on();
-		Thread.sleep(120000);
-		this.water.off();
-		
-		current = production;
+		current = initial;
 	}
 }

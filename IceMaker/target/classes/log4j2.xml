@@ -1,13 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
+
+	<Properties>
+        <Property name="logPath">/var/log</Property>
+        <Property name="rollingFileName">icemaker</Property>
+    </Properties>
+    
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger - %msg%n"/>
         </Console>
+        
+        <Syslog name="syslog" format="RFC5424" host="127.0.0.1" port="514"
+            protocol="UDP" appName="icemaker" includeMDC="false" mdcId="icemaker"
+            facility="LOCAL0" enterpriseNumber="18060" newLine="false"
+            messageId="Audit">
+           <LoggerFields>
+                  <KeyValuePair key="thread" value="%t"/>
+            	  <KeyValuePair key="level" value="%-5level"/>
+            	  <KeyValuePair key="class" value="%logger"/>
+                  <KeyValuePair key="priority" value="%p"/>
+                  <KeyValuePair key="category" value="%c"/>
+                  <KeyValuePair key="exception" value="%ex"/>
+            </LoggerFields>
+    	</Syslog>
+    	
+    	<RollingFile name="rollingFile" fileName="${logPath}/${rollingFileName}.log" filePattern="${logPath}/${rollingFileName}_%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="[%highlight{%-5level}] %d{DEFAULT} Thread(%t) %c{1}.%M() - %msg%n%throwable{short.lineNumber}" />
+            <Policies>
+                <!-- Causes a rollover if the log file is older than the current JVM's start time -->
+                <OnStartupTriggeringPolicy />
+                <!-- Causes a rollover once the date/time pattern no longer applies to the active file -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="debug">
+        <Root name="com.camaor4life18.icemaker" level="debug">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="rollingFile"/>
         </Root>
     </Loggers>
 </Configuration>
