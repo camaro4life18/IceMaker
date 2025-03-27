@@ -39,6 +39,7 @@ public class TempSensor extends Thread{
 			br.close();
 		} catch (Exception e) {
 			logger.error("Exception thrown from - " + sensorName + " - sensor: " + e.getMessage());
+			System.exit(1);
 		}
 	    return line;
 	}

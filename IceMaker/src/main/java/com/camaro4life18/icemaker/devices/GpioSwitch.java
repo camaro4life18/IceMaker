@@ -26,8 +26,7 @@ public class GpioSwitch {
 	}
 	
 	public boolean isOn() {
-		logger.info(this.name + "is " + gswitch.isOn()
-		);
+		logger.info(this.name + " is " + gswitch.isOn());
 		return gswitch.isOn();
 	}
 }

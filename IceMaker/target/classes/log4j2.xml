@@ -36,7 +36,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Root name="com.camaor4life18.icemaker" level="debug">
+        <Root level="debug">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="rollingFile"/>
         </Root>

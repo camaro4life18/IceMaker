@@ -26,8 +26,10 @@ public class Production extends State{
 		this.waterPump.on();
 		
 		logger.info("Waiting on evap temp");
+		double harvestTemp = getHarvestTemp();
+		
 		while(true) {
-			if(evapTemp.getTemp() <= Utils.getHarvestTemp()) {
+			if(evapTemp.getTemp() <= harvestTemp) {
 				current = harvest;
 				return;
 			}

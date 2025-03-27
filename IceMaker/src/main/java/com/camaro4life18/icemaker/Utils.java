@@ -1,7 +1,6 @@
 package com.camaro4life18.icemaker;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,12 +18,15 @@ public class Utils {
 	
 	public static void initializeProperties() {
 		try {
-			properties = new Properties();
+			if(properties == null) {
+				properties = new Properties();				
+			}else {
+				properties.clear();
+			}
 			InputStream input = new FileInputStream(propertiesFile);
 			properties.load(input);
 		} catch (IOException e) {
 			logger.error(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
@@ -42,18 +44,18 @@ public class Utils {
 		return Double.parseDouble(properties.getProperty("stopIce"));
 	}
 
-	public static int getDrainTime() {
+	public static long getDrainTime() {
 		if(properties == null) {
 			Utils.initializeProperties();
 		}
-		return Integer.parseInt(properties.getProperty("drainTime"));
+		return Long.parseLong(properties.getProperty("drainTime")) * 60 * 1000;
 	}
 
-	public static int getWaterFillTime() {
+	public static long getWaterFillTime() {
 		if(properties == null) {
 			Utils.initializeProperties();
 		}
-		return Integer.parseInt(properties.getProperty("waterFillTime"));
+		return Long.parseLong(properties.getProperty("waterFillTime")) * 60 * 1000;
 	}
 
 	public static double getProductionTemp() {
@@ -63,11 +65,11 @@ public class Utils {
 		return Double.parseDouble(properties.getProperty("production"));
 	}
 
-	public static int getCompressorDelay() {
+	public static long getCompressorDelay() {
 		if(properties == null) {
 			Utils.initializeProperties();
 		}
-		return Integer.parseInt(properties.getProperty("compressorDelay"));
+		return Long.parseLong(properties.getProperty("compressorDelay"));
 	}
 
 	public static double getHarvestTemp() {
@@ -77,11 +79,11 @@ public class Utils {
 		return Double.parseDouble(properties.getProperty("harvest"));
 	}
 
-	public static int getIceMelt() {
+	public static long getIceCutTime() {
 		if(properties == null) {
 			Utils.initializeProperties();
 		}
-		return Integer.parseInt(properties.getProperty("iceMelt"));
+		return Long.parseLong(properties.getProperty("iceCutTime")) * 60 * 1000;
 	}
 
 	public static String getGridCutterPin() {
@@ -181,5 +183,33 @@ public class Utils {
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
+	}
+
+	public static String getBinSensor() {
+		if(properties == null) {
+			Utils.initializeProperties();
+		}
+		return properties.getProperty("binSensor");
+	}
+
+	public static String getEvapSensor() {
+		if(properties == null) {
+			Utils.initializeProperties();
+		}
+		return properties.getProperty("evapSensor");
+	}
+
+	public static String getOatSensor() {
+		if(properties == null) {
+			Utils.initializeProperties();
+		}
+		return properties.getProperty("oatSensor");
+	}
+
+	public static double getDefaultOatTemp() {
+		if(properties == null) {
+			Utils.initializeProperties();
+		}
+		return Double.parseDouble(properties.getProperty("defaultOat"));
 	}
 }

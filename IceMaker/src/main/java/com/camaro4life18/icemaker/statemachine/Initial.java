@@ -31,11 +31,13 @@ public class Initial extends State{
 		this.waterPump.on();
 		
 		//Wait for water to run over evap tray. On BinFull -> Initial, the evap tray is cooling off faster than the water fill.
-		Thread.sleep(60000);
-		
+		Thread.sleep(60000);		
+
 		logger.info("Waiting on evap temp");
+		double harvestTemp = getHarvestTemp();
+		
 		while(true) {
-			if(evapTemp.getTemp() <= Utils.getHarvestTemp()) {
+			if(evapTemp.getTemp() <= harvestTemp) {
 				current = harvest;
 				return;
 			}

@@ -22,16 +22,17 @@ public abstract class State{
 	public static State off;
 	public static State current;
 	
-	protected GpioRelay gridCutter = new GpioRelay(pi4j, Utils.getGridCutterPin(), "GridCutter 1");
-	protected GpioRelay waterPump = new GpioRelay(pi4j, Utils.getWaterPumpPin(), "WaterPump 2");
-	protected GpioRelay fan = new GpioRelay(pi4j, Utils.getFanPin(), "Fan 3");
-	protected GpioRelay hotGas = new GpioRelay(pi4j, Utils.getHotGasPin(), "HotGas Solenoid 4");
-	protected GpioRelay drain = new GpioRelay(pi4j, Utils.getDrainPin(), "Drain Solenoid 5");
-	protected GpioRelay water = new GpioRelay(pi4j, Utils.getWaterPin(), "Water Solenoid 6");
-	private GpioRelay compressor = new GpioRelay(pi4j, Utils.getCompressorPin(), "Compressor 7");
+	protected GpioRelay gridCutter = new GpioRelay(pi4j, Utils.getGridCutterPin(), "GridCutter ");
+	protected GpioRelay waterPump = new GpioRelay(pi4j, Utils.getWaterPumpPin(), "WaterPump ");
+	protected GpioRelay fan = new GpioRelay(pi4j, Utils.getFanPin(), "Fan ");
+	protected GpioRelay hotGas = new GpioRelay(pi4j, Utils.getHotGasPin(), "HotGas Solenoid ");
+	protected GpioRelay drain = new GpioRelay(pi4j, Utils.getDrainPin(), "Drain Solenoid ");
+	protected GpioRelay water = new GpioRelay(pi4j, Utils.getWaterPin(), "Water Solenoid ");
+	private GpioRelay compressor = new GpioRelay(pi4j, Utils.getCompressorPin(), "Compressor ");
 	
-	protected TempSensor binTemp = new TempSensor("28-00000094c09c", "Bin");
-	protected TempSensor evapTemp = new TempSensor("28-0000008660fc", "Evap Tray");
+	protected TempSensor binTemp = new TempSensor(Utils.getBinSensor(), "Bin");
+	protected TempSensor evapTemp = new TempSensor(Utils.getEvapSensor(), "Evap Tray");
+	protected TempSensor oatTemp = new TempSensor(Utils.getOatSensor(), "Evap Tray");
 	
 	protected GpioSwitch onSwitch = new GpioSwitch(pi4j, Utils.getOnSwitchPin(), "On Switch");
 	protected GpioSwitch cleanSwitch = new GpioSwitch(pi4j, Utils.getCleanSwitchPin(), "Clean Switch");
@@ -72,10 +73,11 @@ public abstract class State{
 		Runnable runnable = new Runnable() {
 			@Override
 			public void run() {
-				logger.info("Cutting Ice for " + (Utils.getIceMelt() / 1000 / 60) +" mins");
+				long iceCutTime = Utils.getIceCutTime();
+				logger.info("Cutting Ice for " + iceCutTime);
 				gridCutter.on();
-				while(System.currentTimeMillis() - getCutterStartTime() <= Utils.getIceMelt()) {
-					//Keep Waiting
+				while(System.currentTimeMillis() - getCutterStartTime() <= (iceCutTime)) {
+					//wait
 				}
 				gridCutter.off();
 				zeroCutterStartTime();
@@ -84,9 +86,9 @@ public abstract class State{
 		};
 		
 		if(iceCutterThread == null || !iceCutterThread.isAlive()) {
-				
-		
+			resetCutterStartTime();
 			iceCutterThread = new Thread(runnable);
+			logger.info("Starting Ice Cutter Thread");
 			iceCutterThread.start();
 		}else {
 			resetCutterStartTime();			
@@ -109,9 +111,10 @@ public abstract class State{
 	
 	protected void compressorOn() {
 		if(Utils.getCompressorState()) {
-			logger.info("Waiting 9 minutes for compressor safety");
+			long delay = Utils.getCompressorDelay();
+			logger.info("Waiting " + delay + " minutes for compressor safety");
 			try {
-				Thread.sleep(Utils.getCompressorDelay());
+				Thread.sleep(delay * 60 * 1000);
 			} catch (InterruptedException e) {
 				logger.error(e.getMessage());
 			}
@@ -123,5 +126,17 @@ public abstract class State{
 	protected void compressorOff() {
 		compressor.off();
 		Utils.compressorOff();
+	}
+	
+	protected double getHarvestTemp() {
+		double harvestTemp = Utils.getHarvestTemp();
+		double oat = oatTemp.getTemp();
+		double oatAdjust = oat / Utils.getDefaultOatTemp();
+		logger.debug("OAT is " + oat);
+		logger.debug("OAT Adjust is " + oatAdjust);
+		harvestTemp = harvestTemp * oatAdjust;
+		logger.debug("Harvest temp is " + harvestTemp);
+		
+		return harvestTemp;
 	}
 }
