@@ -10,55 +10,51 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.13.0</version>
+        <version>${maven.compiler.version}</version>
         <configuration>
-          <source>11</source>
-          <target>11</target>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>${maven.clean.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.0.2</version>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
+        <version>${maven.resources.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.1</version>
+        <version>${maven.surefire.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>${maven.jar.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-install-plugin</artifactId>
-        <version>2.5.2</version>
+        <version>${maven.install.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
+        <version>${maven.deploy.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.7.1</version>
+        <version>${maven.site.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>${maven.project.info.reports.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
-        <version>2.4.1</version>
+        <version>${maven.assembly.version}</version>
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>${maven.shade.version}</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -67,11 +63,20 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.version}</version>
+          </dependency>
+        </dependencies>
         <configuration>
           <transformers>
             <transformer>
               <mainClass>com.camaro4life18.icemaker.IceMaker</mainClass>
             </transformer>
+            <transformer />
+            <transformer />
             <transformer />
           </transformers>
         </configuration>
@@ -79,8 +84,22 @@
     </plugins>
   </build>
   <properties>
-    <slf4j.version>1.7.32</slf4j.version>
-    <pi4j.version>2.1.1</pi4j.version>
+    <slf4j.version>2.0.13</slf4j.version>
+    <maven.assembly.version>3.7.1</maven.assembly.version>
+    <maven.site.version>3.12.1</maven.site.version>
+    <maven.project.info.reports.version>3.6.2</maven.project.info.reports.version>
+    <log4j.version>2.23.1</log4j.version>
+    <maven.clean.version>3.5.0</maven.clean.version>
+    <maven.surefire.version>3.5.3</maven.surefire.version>
+    <maven.compiler.version>3.14.0</maven.compiler.version>
+    <maven.resources.version>3.3.1</maven.resources.version>
+    <maven.shade.version>3.6.0</maven.shade.version>
+    <maven.compiler.source>21</maven.compiler.source>
+    <pi4j.version>3.0.2</pi4j.version>
+    <maven.deploy.version>3.1.2</maven.deploy.version>
+    <ehcache.version>3.10.8</ehcache.version>
+    <maven.install.version>3.1.2</maven.install.version>
+    <maven.compiler.target>21</maven.compiler.target>
+    <maven.jar.version>3.4.2</maven.jar.version>
   </properties>
 </project>
-

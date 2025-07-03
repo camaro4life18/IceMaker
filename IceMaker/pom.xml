@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.camaro4life18</groupId>
@@ -8,87 +9,91 @@
   
   <properties>
     <!-- DEPENDENCIES VERSIONS -->
-	<slf4j.version>1.7.32</slf4j.version>
-	<pi4j.version>2.1.1</pi4j.version>
+    <pi4j.version>3.0.2</pi4j.version> <!-- Updated Pi4J to version 3.0.2 for Java 24 compatibility -->
+    <ehcache.version>3.10.8</ehcache.version>
+    <!-- Removed explicit log4j.version and slf4j.version as spring-boot-starter-log4j2 will manage them -->
+
+    <!-- PLUGIN VERSIONS -->
+    <maven.compiler.version>3.14.0</maven.compiler.version>
+    <maven.clean.version>3.5.0</maven.clean.version>
+    <maven.resources.version>3.3.1</maven.resources.version>
+    <maven.surefire.version>3.5.3</maven.surefire.version>
+    <maven.jar.version>3.4.2</maven.jar.version>
+    <maven.install.version>3.1.2</maven.install.version>
+    <maven.deploy.version>3.1.2</maven.deploy.version>
+    <maven.site.version>3.12.1</maven.site.version>
+    <maven.project.info.reports.version>3.6.2</maven.project.info.reports.version>
+    <maven.assembly.version>3.7.1</maven.assembly.version>
+    <spring-boot-maven-plugin.version>3.3.1</spring-boot-maven-plugin.version> <!-- Latest stable Spring Boot Maven Plugin -->
+
+    <!-- JAVA COMPILER SETTINGS -->
+    <maven.compiler.source>21</maven.compiler.source> <!-- Pi4J 3.x is built for Java 21+ -->
+    <maven.compiler.target>21</maven.compiler.target> <!-- Pi4J 3.x is built for Java 21+ -->
   </properties>
 
-  
   <build>
 	  <plugins>
 	    <plugin>
 	      <groupId>org.apache.maven.plugins</groupId>
 	      <artifactId>maven-compiler-plugin</artifactId>
-	      <version>3.13.0</version>	
+	      <version>${maven.compiler.version}</version>	
 	      <configuration>
-	        <source>11</source>
-	        <target>11</target>
+	        <source>${maven.compiler.source}</source>
+	        <target>${maven.compiler.target}</target>
 	      </configuration>
 	    </plugin>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
         <plugin>
           <artifactId>maven-clean-plugin</artifactId>
-          <version>3.1.0</version>
-        </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
-        <plugin>
+          <version>${maven.clean.version}</version>
+        </plugin>  
+        <plugin> 
           <artifactId>maven-resources-plugin</artifactId>
-          <version>3.0.2</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.0</version>
+          <version>${maven.resources.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
+          <version>${maven.surefire.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
-          <version>3.0.2</version>
+          <version>${maven.jar.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
-          <version>2.5.2</version>
+          <version>${maven.install.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
-          <version>2.8.2</version>
+          <version>${maven.deploy.version}</version>
         </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
-          <version>3.7.1</version>
+          <version>${maven.site.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>${maven.project.info.reports.version}</version>
         </plugin>
         <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-assembly-plugin</artifactId>
-			<version>2.4.1</version>
+			<version>${maven.assembly.version}</version>
 		</plugin>
-		<plugin>
-	        <groupId>org.apache.maven.plugins</groupId>
-	        <artifactId>maven-shade-plugin</artifactId>
-	        <version>3.0.0</version>
-	        <configuration>
-	        	<transformers>
-	                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"> 
-	                  <mainClass>com.camaro4life18.icemaker.IceMaker</mainClass>
-	                </transformer>
-	                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
-	              </transformers>
-	        </configuration>
-	        <executions>
-	          <execution>
-	            <phase>package</phase>
-	            <goals>
-	              <goal>shade</goal>
-	            </goals>
-	          </execution>
-	        </executions>
-	      </plugin>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+            <version>${spring-boot-maven-plugin.version}</version>
+            <configuration>
+                <mainClass>com.camaro4life18.icemaker.IceMaker</mainClass>
+            </configuration>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>repackage</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
       </plugins>
   </build>
 
@@ -96,55 +101,36 @@
 		<dependency>
 		    <groupId>com.pi4j</groupId>
 		    <artifactId>pi4j-core</artifactId>
-		    <version>2.1.1</version>
+		    <version>${pi4j.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.pi4j</groupId>
 		    <artifactId>pi4j-plugin-raspberrypi</artifactId>
-		    <version>2.1.1</version>
+		    <version>${pi4j.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.pi4j</groupId>
 		    <artifactId>pi4j-plugin-pigpio</artifactId>
-		    <version>2.1.1</version>
+		    <version>${pi4j.version}</version>
 		</dependency>
+		
 		<dependency>
 		    <groupId>org.ehcache</groupId>
 		    <artifactId>ehcache</artifactId>
-		    <version>3.10.8</version>
-		</dependency>
-		
-		 <dependency>
-            <groupId>org.ehcache</groupId>
-            <artifactId>ehcache</artifactId>
-            <version>3.10.0</version>
+		    <version>${ehcache.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.glassfish.jaxb</groupId>
                     <artifactId>jaxb-runtime</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-api</artifactId>
-			<version>2.12.4</version>
-		</dependency>
-        <dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
-		    <version>2.12.4</version>
 		</dependency>
 		
-		<dependency>
-	  		<groupId>org.slf4j</groupId>
-	  		<artifactId>slf4j-api</artifactId>
-	  		<version>1.7.32</version>
-	  	</dependency>
-	  	<dependency>
-	        <groupId>org.slf4j</groupId>
-	        <artifactId>slf4j-simple</artifactId>
-	        <version>${slf4j.version}</version>
-	    </dependency>
+        <!-- Use Spring Boot's Log4j2 starter for complete and managed Log4j2 integration -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <version>${spring-boot-maven-plugin.version}</version> <!-- Align with Spring Boot version -->
+        </dependency>
 	</dependencies>
 </project>

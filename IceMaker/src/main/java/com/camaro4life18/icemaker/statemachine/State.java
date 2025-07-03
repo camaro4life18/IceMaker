@@ -32,7 +32,7 @@ public abstract class State{
 	
 	protected TempSensor binTemp = new TempSensor(Utils.getBinSensor(), "Bin");
 	protected TempSensor evapTemp = new TempSensor(Utils.getEvapSensor(), "Evap Tray");
-	protected TempSensor oatTemp = new TempSensor(Utils.getOatSensor(), "Evap Tray");
+	//protected TempSensor oatTemp = new TempSensor(Utils.getOatSensor(), "Evap Tray");
 	
 	protected GpioSwitch onSwitch = new GpioSwitch(pi4j, Utils.getOnSwitchPin(), "On Switch");
 	protected GpioSwitch cleanSwitch = new GpioSwitch(pi4j, Utils.getCleanSwitchPin(), "Clean Switch");
@@ -130,11 +130,11 @@ public abstract class State{
 	
 	protected double getHarvestTemp() {
 		double harvestTemp = Utils.getHarvestTemp();
-		double oat = oatTemp.getTemp();
-		double oatAdjust = oat / Utils.getDefaultOatTemp();
-		logger.debug("OAT is " + oat);
-		logger.debug("OAT Adjust is " + oatAdjust);
-		harvestTemp = harvestTemp * oatAdjust;
+		//double oat = oatTemp.getTemp();
+		//double oatAdjust = oat / Utils.getDefaultOatTemp();
+		//logger.debug("OAT is " + oat);
+		//logger.debug("OAT Adjust is " + oatAdjust);
+		//harvestTemp = harvestTemp * oatAdjust;
 		logger.debug("Harvest temp is " + harvestTemp);
 		
 		return harvestTemp;
