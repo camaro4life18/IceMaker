@@ -1,5 +1,7 @@
 package com.camaro4life18.icemaker.devices;
 
+import java.util.Properties;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,13 +18,14 @@ public class GpioSwitch {
 	
 	public GpioSwitch(Context pi4j, String gpioPin, String name) {
 		this.name = name;
-		var switchConfig = DigitalInput.newConfigBuilder(pi4j)
-				.id("relay-" + name)
-				.name(name)
-				.address(Integer.parseInt(gpioPin))
-				.provider("pigpio-digital-input");
-		this.gswitch = pi4j.create(switchConfig);
+		Properties prop = new Properties();
+		prop.put("id", "relay-" + name);
+		prop.put("address", Integer.parseInt(gpioPin));
+		prop.put("name", name);
+		prop.put("pull", "UP");
 		
+		var switchConfig = DigitalInput.newConfigBuilder(pi4j).load(prop).build();
+		this.gswitch = pi4j.din().create(switchConfig);		
 	}
 	
 	public boolean isOn() {

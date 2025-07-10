@@ -22,6 +22,7 @@ public abstract class State{
 	public static State off;
 	public static State current;
 	
+	protected GpioRelay w1Power = new GpioRelay(pi4j, Utils.getW1Pin(), "W1 Power");
 	protected GpioRelay gridCutter = new GpioRelay(pi4j, Utils.getGridCutterPin(), "GridCutter ");
 	protected GpioRelay waterPump = new GpioRelay(pi4j, Utils.getWaterPumpPin(), "WaterPump ");
 	protected GpioRelay fan = new GpioRelay(pi4j, Utils.getFanPin(), "Fan ");
@@ -30,9 +31,9 @@ public abstract class State{
 	protected GpioRelay water = new GpioRelay(pi4j, Utils.getWaterPin(), "Water Solenoid ");
 	private GpioRelay compressor = new GpioRelay(pi4j, Utils.getCompressorPin(), "Compressor ");
 	
-	protected TempSensor binTemp = new TempSensor(Utils.getBinSensor(), "Bin");
-	protected TempSensor evapTemp = new TempSensor(Utils.getEvapSensor(), "Evap Tray");
-	//protected TempSensor oatTemp = new TempSensor(Utils.getOatSensor(), "Evap Tray");
+	protected TempSensor binTemp = new TempSensor(Utils.getBinSensor(), "Bin", w1Power);
+	protected TempSensor evapTemp = new TempSensor(Utils.getEvapSensor(), "Evap Tray", w1Power);
+	//protected TempSensor oatTemp = new TempSensor(Utils.getOatSensor(), "Evap Tray", w1Power);
 	
 	protected GpioSwitch onSwitch = new GpioSwitch(pi4j, Utils.getOnSwitchPin(), "On Switch");
 	protected GpioSwitch cleanSwitch = new GpioSwitch(pi4j, Utils.getCleanSwitchPin(), "Clean Switch");

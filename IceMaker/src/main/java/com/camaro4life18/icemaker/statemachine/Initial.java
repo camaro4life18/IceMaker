@@ -11,6 +11,7 @@ public class Initial extends State{
 	public void run() throws InterruptedException {
 		logger.info("Running Initial State");		
 		Utils.initializeProperties();
+		w1Power.on();
 		
 		if(!onSwitch.isOn()) {
 			current = off;

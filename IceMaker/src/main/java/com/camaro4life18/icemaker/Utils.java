@@ -212,4 +212,11 @@ public class Utils {
 		}
 		return Double.parseDouble(properties.getProperty("defaultOat"));
 	}
+	
+	public static String getW1Pin() {
+		if(properties == null) {
+			Utils.initializeProperties();
+		}
+		return properties.getProperty("w1pin");
+	}
 }
