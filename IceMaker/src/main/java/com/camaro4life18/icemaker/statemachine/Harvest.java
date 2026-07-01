@@ -5,6 +5,16 @@ import org.apache.logging.log4j.Logger;
 
 import com.camaro4life18.icemaker.Utils;
 
+/**
+ * Represents the Harvest state.
+ * <p>
+ * This state is responsible for releasing the ice from the evaporator:
+ * 1. Stops water circulation and activates the Hot Gas valve to warm the plate.
+ * 2. Activates the Grid Cutter to slice the ice sheet.
+ * 3. Drains the remaining water to remove mineral buildup.
+ * 4. Checks if the bin is full or if the cycle should repeat.
+ * </p>
+ */
 public class Harvest extends State{
 	private Logger logger = LogManager.getLogger(Harvest.class);
 
@@ -16,24 +26,40 @@ public class Harvest extends State{
 			return;
 		}
 		
-		this.waterPump.off();
-		this.fan.off();
-		this.hotGas.on();
+		// Stop cooling the water and turn on Hot Gas to loosen ice
+		waterPump.off();
+		fan.off();
+		hotGas.on();
+		
+		// Start the grid cutter to slice the ice sheet
 		cutIce();
 		
-		this.drain.on();
+		// Drain the remaining cold/mineral-rich water
+		drain.on();
 		Thread.sleep(Utils.getDrainTime());
-		this.drain.off();
+		drain.off();
 		
+		// Wait for harvest completion or bin full condition
 		while(true) {
-			if(binTemp.getTemp() <= Utils.getStopIce()) {
+			// If bin is full (cold), stop making ice
+			double binTemperature = readTempOrFault(binTemp, "Bin thermistor");
+			if(Double.isNaN(binTemperature)) {
+				return;
+			}
+			if(binTemperature <= Utils.getStopIce()) {
 				current = binfull;
 				return;
 			}
-			else if(evapTemp.getTemp() >= Utils.getProductionTemp()) {
+			// If evaporator warms up enough, the ice has dropped. Go back to production.
+			double evapTemperature = readTempOrFault(evapTemp, "Evaporator thermistor");
+			if(Double.isNaN(evapTemperature)) {
+				return;
+			}
+			else if(evapTemperature >= Utils.getProductionTemp()) {
 				current = production;
 				return;
 			}
+			Thread.sleep(1000);
 		}
 		
 	}

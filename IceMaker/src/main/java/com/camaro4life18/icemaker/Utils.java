@@ -15,6 +15,28 @@ public class Utils {
 	private static Logger logger = LogManager.getLogger(Utils.class);
 	private static Properties properties = null;
 	private static String propertiesFile = "config.properties";
+	private static final String[] REQUIRED_PROPERTIES = {
+		"binSensor",
+		"cleanPin",
+		"compressorDelay",
+		"compressorPin",
+		"drainPin",
+		"drainTime",
+		"evapSensor",
+		"fanPin",
+		"gridCutterPin",
+		"harvest",
+		"hotGasPin",
+		"iceCutTime",
+		"onPin",
+		"production",
+		"startIce",
+		"stopIce",
+		"w1pin",
+		"waterFillTime",
+		"waterPin",
+		"waterPumpPin"
+	};
 	
 	public static void initializeProperties() {
 		try {
@@ -23,10 +45,31 @@ public class Utils {
 			}else {
 				properties.clear();
 			}
-			InputStream input = new FileInputStream(propertiesFile);
-			properties.load(input);
+			try (InputStream input = new FileInputStream(propertiesFile)) {
+				properties.load(input);
+			}
+			validateProperties();
 		} catch (IOException e) {
-			logger.error(e.getMessage());
+			throw new IllegalStateException("Unable to load configuration from " + propertiesFile, e);
+		}
+	}
+
+	private static void validateProperties() {
+		for(String requiredProperty : REQUIRED_PROPERTIES) {
+			String value = properties.getProperty(requiredProperty);
+			if(value == null || value.trim().isEmpty()) {
+				throw new IllegalStateException("Missing required configuration property: " + requiredProperty);
+			}
+		}
+
+		String logLevel = properties.getProperty("logLevel");
+		String legacyLogLevel = properties.getProperty("loglevel");
+		if((logLevel == null || logLevel.trim().isEmpty()) && (legacyLogLevel == null || legacyLogLevel.trim().isEmpty())) {
+			throw new IllegalStateException("Missing required configuration property: logLevel/loglevel");
+		}
+
+		if(properties.getProperty("compressorState") == null || properties.getProperty("compressorState").trim().isEmpty()) {
+			properties.setProperty("compressorState", "0");
 		}
 	}
 
@@ -173,7 +216,11 @@ public class Utils {
 		if(properties == null) {
 			Utils.initializeProperties();
 		}		
-		return Level.toLevel(properties.getProperty("logLevel"));
+		String configuredLevel = properties.getProperty("logLevel");
+		if(configuredLevel == null || configuredLevel.trim().isEmpty()) {
+			configuredLevel = properties.getProperty("loglevel");
+		}
+		return Level.toLevel(configuredLevel);
 	}
 	
 	private static void storeProperties() {

@@ -40,6 +40,17 @@ public class IceMaker {
 				State.current.run();
 			} catch (InterruptedException e) {
 				logger.error("Sleep error: " + e.getMessage());
+			} catch (RuntimeException e) {
+				logger.error("Fatal runtime error in controller loop", e);
+				State.current = State.off;
+				try {
+					State.current.run();
+				} catch (InterruptedException interruptedException) {
+					logger.error("Interrupted while entering safe shutdown", interruptedException);
+				} catch (RuntimeException shutdownException) {
+					logger.error("Safe shutdown also failed", shutdownException);
+				}
+				break;
 			}
 		}
 	}

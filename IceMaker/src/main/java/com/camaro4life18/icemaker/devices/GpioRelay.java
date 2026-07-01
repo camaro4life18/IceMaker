@@ -26,18 +26,24 @@ public class GpioRelay {
 		try{
 			this.relay = pi4j.create(relayConfig);
 		}catch(Exception e) {
-			logger.error(e.getMessage());
+			throw new IllegalStateException("Unable to initialize relay " + name + " on pin " + gpioPin, e);
 		}
 		
 	}
 	
 	public void on() {
+		if(this.relay == null) {
+			throw new IllegalStateException("Relay " + name + " is not initialized");
+		}
 		this.relay.low();
 		relayStatus = true;
 		logger.info(name + " turned on");
 	}
 	
 	public void off() {
+		if(this.relay == null) {
+			throw new IllegalStateException("Relay " + name + " is not initialized");
+		}
 		this.relay.high();
 		relayStatus = false;
 		logger.info(name + " turned off");

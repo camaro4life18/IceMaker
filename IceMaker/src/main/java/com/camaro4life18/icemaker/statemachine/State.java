@@ -10,10 +10,20 @@ import com.camaro4life18.icemaker.devices.TempSensor;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
 
+/**
+ * Abstract base class for the Ice Maker State Machine.
+ * <p>
+ * This class serves as the context and base for the state pattern implementation.
+ * It manages the shared hardware resources (GPIO pins, Relays, Sensors) via Pi4J
+ * and holds static references to all concrete state instances.
+ * </p>
+ */
 public abstract class State{
 	private static Logger logger = LogManager.getLogger(State.class);
-	protected Context pi4j = Pi4J.newAutoContext();
+	// Shared hardware context for all states
+	protected static Context pi4j = Pi4J.newAutoContext();
 	
+	// State instances
 	public static State initial;
 	public static State harvest;
 	public static State production;
@@ -22,24 +32,25 @@ public abstract class State{
 	public static State off;
 	public static State current;
 	
-	protected GpioRelay w1Power = new GpioRelay(pi4j, Utils.getW1Pin(), "W1 Power");
-	protected GpioRelay gridCutter = new GpioRelay(pi4j, Utils.getGridCutterPin(), "GridCutter ");
-	protected GpioRelay waterPump = new GpioRelay(pi4j, Utils.getWaterPumpPin(), "WaterPump ");
-	protected GpioRelay fan = new GpioRelay(pi4j, Utils.getFanPin(), "Fan ");
-	protected GpioRelay hotGas = new GpioRelay(pi4j, Utils.getHotGasPin(), "HotGas Solenoid ");
-	protected GpioRelay drain = new GpioRelay(pi4j, Utils.getDrainPin(), "Drain Solenoid ");
-	protected GpioRelay water = new GpioRelay(pi4j, Utils.getWaterPin(), "Water Solenoid ");
-	private GpioRelay compressor = new GpioRelay(pi4j, Utils.getCompressorPin(), "Compressor ");
+	// Hardware device definitions
+	protected static GpioRelay w1Power = new GpioRelay(pi4j, Utils.getW1Pin(), "W1 Power");
+	protected static GpioRelay gridCutter = new GpioRelay(pi4j, Utils.getGridCutterPin(), "GridCutter ");
+	protected static GpioRelay waterPump = new GpioRelay(pi4j, Utils.getWaterPumpPin(), "WaterPump ");
+	protected static GpioRelay fan = new GpioRelay(pi4j, Utils.getFanPin(), "Fan ");
+	protected static GpioRelay hotGas = new GpioRelay(pi4j, Utils.getHotGasPin(), "HotGas Solenoid ");
+	protected static GpioRelay drain = new GpioRelay(pi4j, Utils.getDrainPin(), "Drain Solenoid ");
+	protected static GpioRelay water = new GpioRelay(pi4j, Utils.getWaterPin(), "Water Solenoid ");
+	private static GpioRelay compressor = new GpioRelay(pi4j, Utils.getCompressorPin(), "Compressor ");
 	
-	protected TempSensor binTemp = new TempSensor(Utils.getBinSensor(), "Bin", w1Power);
-	protected TempSensor evapTemp = new TempSensor(Utils.getEvapSensor(), "Evap Tray", w1Power);
+	protected static TempSensor binTemp = new TempSensor(Utils.getBinSensor(), "Bin", w1Power);
+	protected static TempSensor evapTemp = new TempSensor(Utils.getEvapSensor(), "Evap Tray", w1Power);
 	//protected TempSensor oatTemp = new TempSensor(Utils.getOatSensor(), "Evap Tray", w1Power);
 	
-	protected GpioSwitch onSwitch = new GpioSwitch(pi4j, Utils.getOnSwitchPin(), "On Switch");
-	protected GpioSwitch cleanSwitch = new GpioSwitch(pi4j, Utils.getCleanSwitchPin(), "Clean Switch");
+	protected static GpioSwitch onSwitch = new GpioSwitch(pi4j, Utils.getOnSwitchPin(), "On Switch");
+	protected static GpioSwitch cleanSwitch = new GpioSwitch(pi4j, Utils.getCleanSwitchPin(), "Clean Switch");
 
-	private long cutterStartTime = 0;
-	private Thread iceCutterThread = null;
+	private static long cutterStartTime = 0;
+	private static Thread iceCutterThread = null;
 	
 	public State() {
 		
@@ -49,25 +60,40 @@ public abstract class State{
 	public void run() throws InterruptedException {}
 	
 	protected void everythingOff() {
-		this.gridCutter.off();
-		this.waterPump.off();
-		this.fan.off();
-		this.hotGas.off();
-		this.drain.off();
-		this.water.off();
-		this.compressor.off();
+		gridCutter.off();
+		waterPump.off();
+		fan.off();
+		hotGas.off();
+		drain.off();
+		water.off();
+		compressor.off();
+	}
+
+	protected void enterFault(String reason) {
+		logger.error("Entering safe fault state: " + reason);
+		everythingOff();
+		current = off;
+	}
+
+	protected double readTempOrFault(TempSensor sensor, String sensorName) {
+		double temperature = sensor.getTemp();
+		if(Double.isNaN(temperature) || Double.isInfinite(temperature)) {
+			enterFault(sensorName + " returned an invalid temperature reading");
+			return Double.NaN;
+		}
+		return temperature;
 	}
 	
 	protected void deviceStatus() {
-		this.gridCutter.status();
-		this.waterPump.status();
-		this.fan.status();
-		this.hotGas.status();
-		this.drain.status();
-		this.water.status();
-		this.compressor.status();
-		this.binTemp.getTemp();
-		this.evapTemp.getTemp();
+		gridCutter.status();
+		waterPump.status();
+		fan.status();
+		hotGas.status();
+		drain.status();
+		water.status();
+		compressor.status();
+		binTemp.getTemp();
+		evapTemp.getTemp();
 	}
 	
 	protected void cutIce(){
@@ -77,36 +103,48 @@ public abstract class State{
 				long iceCutTime = Utils.getIceCutTime();
 				logger.info("Cutting Ice for " + iceCutTime);
 				gridCutter.on();
-				while(System.currentTimeMillis() - getCutterStartTime() <= (iceCutTime)) {
-					//wait
+				try {
+					// Keep cutter on for the specified duration
+					while(System.currentTimeMillis() - getCutterStartTime() <= (iceCutTime)) {
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							Thread.currentThread().interrupt();
+							break;
+						}
+					}
+				} finally {
+					// Ensure cutter turns off even if interrupted
+					gridCutter.off();
 				}
-				gridCutter.off();
 				zeroCutterStartTime();
 				iceCutterThread = null;
 			}
 		};
 		
+		// Start a new cutter thread if one isn't already running
 		if(iceCutterThread == null || !iceCutterThread.isAlive()) {
 			resetCutterStartTime();
 			iceCutterThread = new Thread(runnable);
 			logger.info("Starting Ice Cutter Thread");
 			iceCutterThread.start();
 		}else {
+			// If already running, extend the timer
 			resetCutterStartTime();			
 		}
 	}
 	
-	synchronized private void resetCutterStartTime() {
+	synchronized private static void resetCutterStartTime() {
 		cutterStartTime = System.currentTimeMillis();
 		logger.debug("Resetting cutter start time: " + getCutterStartTime());
 	}
 	
-	synchronized private void zeroCutterStartTime() {
+	synchronized private static void zeroCutterStartTime() {
 		cutterStartTime = 0;
 		logger.debug("Zeroing cutter start time: " + getCutterStartTime());
 	}
 	
-	synchronized private long getCutterStartTime() {
+	synchronized private static long getCutterStartTime() {
 		return cutterStartTime;
 	}
 	

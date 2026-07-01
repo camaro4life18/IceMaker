@@ -54,8 +54,7 @@ public class TempSensor extends Thread {
         }
 
         logger.error("Failed to get temperature after " + maxRetries + " retries for sensor: " + this.sensorName);
-        System.exit(1);
-        return Double.NaN; // Return NaN after all retries fail
+        return Double.NaN; // Return NaN after all retries fail so the caller can enter a safe state
     }
 
     private String readFile(String fileName) {
@@ -73,8 +72,9 @@ public class TempSensor extends Thread {
     	try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+            Thread.currentThread().interrupt();
+            logger.error("Interrupted while resetting W1 power", e);
+            return;
 		}
     	w1Power.on();
     }

@@ -2,11 +2,12 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.camaro4life18</groupId>
   <artifactId>IceMaker</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>${revision}</version>
   <name>IceMaker</name>
   <description>IceMaker</description>
 
   <properties>
+    <revision>0.0.1-SNAPSHOT</revision>
     <maven.compiler.version>3.14.0</maven.compiler.version>
     <maven.clean.version>3.5.0</maven.clean.version>
     <maven.resources.version>3.3.1</maven.resources.version>
