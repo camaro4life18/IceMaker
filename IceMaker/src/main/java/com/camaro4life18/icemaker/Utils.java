@@ -32,7 +32,6 @@ public class Utils {
 		"production",
 		"startIce",
 		"stopIce",
-		"w1pin",
 		"waterFillTime",
 		"waterPin",
 		"waterPumpPin"
@@ -191,7 +190,7 @@ public class Utils {
 		}
 		return properties.getProperty("cleanPin");
 	}
-	
+
 	public static void compressorOn() {
 		logger.debug("Setting Compressor On State");
 		properties.setProperty("compressorState", "1");		
@@ -258,12 +257,5 @@ public class Utils {
 			Utils.initializeProperties();
 		}
 		return Double.parseDouble(properties.getProperty("defaultOat"));
-	}
-	
-	public static String getW1Pin() {
-		if(properties == null) {
-			Utils.initializeProperties();
-		}
-		return properties.getProperty("w1pin");
 	}
 }

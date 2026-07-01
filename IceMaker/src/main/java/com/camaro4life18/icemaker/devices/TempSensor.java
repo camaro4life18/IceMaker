@@ -14,12 +14,10 @@ public class TempSensor extends Thread {
     private String filePath = "/sys/bus/w1/devices";
     private int maxRetries = 10; // Maximum number of retries
     private long retryDelay = 1000; // Delay between retries in milliseconds
-    private GpioRelay w1Power;
 
-    public TempSensor(String sensorID, String sensorName, GpioRelay w1Power) {
+    public TempSensor(String sensorID, String sensorName) {
         this.sensorName = sensorName;
         filePath = filePath + "/" + sensorID;
-        this.w1Power = w1Power;
     }
 
     public double getTemp() {
@@ -42,7 +40,6 @@ public class TempSensor extends Thread {
             } else {
                 logger.warn("Temperature data is null for sensor: " + this.sensorName + ". Retrying...");
                 retryCount++;
-                resetW1Power();
                 try {
                     Thread.sleep(retryDelay); // Wait before retrying
                 } catch (InterruptedException e) {
@@ -65,17 +62,5 @@ public class TempSensor extends Thread {
             logger.error("Exception thrown from - " + sensorName + " - sensor, file: " + fileName + ": " + e.getMessage(), e);
         }
         return line;
-    }
-    
-    private void resetW1Power() {
-    	w1Power.off();
-    	try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            logger.error("Interrupted while resetting W1 power", e);
-            return;
-		}
-    	w1Power.on();
     }
 }
