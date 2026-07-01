@@ -15,6 +15,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: IceMaker
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,6 +29,7 @@ jobs:
           distribution: temurin
           java-version: '21'
           cache: maven
+          cache-dependency-path: IceMaker/pom.xml
 
       - name: Resolve build version
         id: version
@@ -39,12 +44,12 @@ jobs:
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Build executable jar
-        run: mvn -B -DskipTests -Drevision=${{ steps.version.outputs.version }} package
+        run: mvn -B -DskipTests "-Drevision=${{ steps.version.outputs.version }}" package
 
       - name: Upload jar artifact
         uses: actions/upload-artifact@v4
         with:
           name: IceMaker-${{ steps.version.outputs.version }}
-          path: target/IceMaker-${{ steps.version.outputs.version }}.jar
+          path: IceMaker/target/IceMaker-${{ steps.version.outputs.version }}.jar
           if-no-files-found: error
           retention-days: 30
