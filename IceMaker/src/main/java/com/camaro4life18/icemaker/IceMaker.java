@@ -8,6 +8,7 @@ import org.apache.logging.log4j.core.config.LoggerConfig;
 
 import com.camaro4life18.icemaker.statemachine.BinFull;
 import com.camaro4life18.icemaker.statemachine.Clean;
+import com.camaro4life18.icemaker.statemachine.Fault;
 import com.camaro4life18.icemaker.statemachine.Harvest;
 import com.camaro4life18.icemaker.statemachine.Initial;
 import com.camaro4life18.icemaker.statemachine.Off;
@@ -27,6 +28,7 @@ public class IceMaker {
 		State.binfull = new BinFull();
 		State.off = new Off();
 		State.clean = new Clean();
+		State.fault = new Fault();
 		State.current = State.initial;
 		
 		LoggerContext context = (LoggerContext) LogManager.getContext(false);

@@ -30,6 +30,7 @@ public abstract class State{
 	public static State binfull;
 	public static State clean;
 	public static State off;
+	public static State fault;
 	public static State current;
 	
 	// Hardware device definitions
@@ -71,7 +72,7 @@ public abstract class State{
 	protected void enterFault(String reason) {
 		logger.error("Entering safe fault state: " + reason);
 		everythingOff();
-		current = off;
+		current = fault;
 	}
 
 	protected double readTempOrFault(TempSensor sensor, String sensorName) {
