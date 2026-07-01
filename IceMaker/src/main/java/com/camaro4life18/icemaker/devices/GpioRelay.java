@@ -19,10 +19,10 @@ public class GpioRelay {
 		var relayConfig = DigitalOutput.newConfigBuilder(pi4j)
 				.id("relay-" + name)
 				.name(name)
-				.address(Integer.parseInt(gpioPin))
+				.bcm(Integer.parseInt(gpioPin))
 				.shutdown(DigitalState.HIGH)
 				.initial(DigitalState.HIGH)
-				.provider("pigpio-digital-output");
+				.build();
 		try{
 			this.relay = pi4j.create(relayConfig);
 		}catch(Exception e) {
