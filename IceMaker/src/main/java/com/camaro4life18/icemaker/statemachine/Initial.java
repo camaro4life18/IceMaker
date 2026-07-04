@@ -27,6 +27,10 @@ public class Initial extends State{
 			return;
 		}
 
+		// Allow 1-wire bus to settle after GPIO initialization
+		logger.info("Waiting for 1-wire bus to stabilize after GPIO init...");
+		Thread.sleep(5000);
+
 		// Check if bin is already full upon startup
 		double binTemperature = readTempOrFault(binTemp, "Bin thermistor");
 		if(Double.isNaN(binTemperature)) {

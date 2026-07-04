@@ -12,7 +12,7 @@ public class TempSensor extends Thread {
 
     private String sensorName = null;
     private String filePath = "/sys/bus/w1/devices";
-    private int maxRetries = 10; // Maximum number of retries
+    private int maxRetries = 30; // Maximum number of retries
     private long retryDelay = 1000; // Delay between retries in milliseconds
 
     public TempSensor(String sensorID, String sensorName) {
