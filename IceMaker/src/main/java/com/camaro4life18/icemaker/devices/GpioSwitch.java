@@ -19,7 +19,7 @@ public class GpioSwitch {
 				.id("switch-" + name)
 				.name(name)
 				.bcm(Integer.parseInt(gpioPin))
-				.pull(PullResistance.PULL_UP)
+				.pull(PullResistance.PULL_DOWN)
 				.build();
 		this.gswitch = pi4j.din().create(switchConfig);		
 	}
