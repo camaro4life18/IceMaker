@@ -25,9 +25,9 @@ public abstract class State{
 	private static Logger logger = LogManager.getLogger(State.class);
 	// Shared hardware context for all states
 	protected static Context pi4j = Pi4J.newContextBuilder()
-			.add(RaspberryPiPlatform.newInstance())
-			.add(RpiDigitalOutputProviderImpl.newInstance())
-			.add(FFMDigitalInputProviderImpl.newInstance())
+			.add(new RaspberryPiPlatform())
+			.add(new RpiDigitalOutputProviderImpl())
+			.add(new FFMDigitalInputProviderImpl())
 			.build();
 	
 	// State instances
