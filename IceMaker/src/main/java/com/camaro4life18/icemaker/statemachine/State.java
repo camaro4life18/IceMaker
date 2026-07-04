@@ -9,6 +9,9 @@ import com.camaro4life18.icemaker.devices.GpioSwitch;
 import com.camaro4life18.icemaker.devices.TempSensor;
 import com.pi4j.Pi4J;
 import com.pi4j.context.Context;
+import com.pi4j.plugin.ffm.providers.gpio.FFMDigitalInputProviderImpl;
+import com.pi4j.plugin.raspberrypi.platform.RaspberryPiPlatform;
+import com.pi4j.plugin.raspberrypi.provider.gpio.digital.RpiDigitalOutputProviderImpl;
 
 /**
  * Abstract base class for the Ice Maker State Machine.
@@ -21,7 +24,11 @@ import com.pi4j.context.Context;
 public abstract class State{
 	private static Logger logger = LogManager.getLogger(State.class);
 	// Shared hardware context for all states
-	protected static Context pi4j = Pi4J.newAutoContext();
+	protected static Context pi4j = Pi4J.newContextBuilder()
+			.add(RaspberryPiPlatform.newInstance())
+			.add(RpiDigitalOutputProviderImpl.newInstance())
+			.add(FFMDigitalInputProviderImpl.newInstance())
+			.build();
 	
 	// State instances
 	public static State initial;

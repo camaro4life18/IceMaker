@@ -19,7 +19,6 @@ public class GpioSwitch {
 				.id("switch-" + name)
 				.name(name)
 				.bcm(Integer.parseInt(gpioPin))
-				.provider("ffm-digital-input")
 				.pull(PullResistance.PULL_DOWN)
 				.build();
 		this.gswitch = pi4j.din().create(switchConfig);		

@@ -20,7 +20,6 @@ public class GpioRelay {
 				.id("relay-" + name)
 				.name(name)
 				.bcm(Integer.parseInt(gpioPin))
-				.provider("raspberrypi-digital-output")
 				.shutdown(DigitalState.HIGH)
 				.initial(DigitalState.HIGH)
 				.build();
