@@ -2,6 +2,7 @@ package com.camaro4life18.icemaker.devices;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.text.DecimalFormat;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 public class TempSensor extends Thread {
     private static Logger logger = LogManager.getLogger(TempSensor.class);
 
+    private static final String W1_MASTER_SEARCH = "/sys/bus/w1/devices/w1_bus_master1/w1_master_search";
     private String sensorName = null;
     private String filePath = "/sys/bus/w1/devices";
     private int maxRetries = 30; // Maximum number of retries
@@ -40,6 +42,10 @@ public class TempSensor extends Thread {
             } else {
                 logger.warn("Temperature data is null for sensor: " + this.sensorName + ". Retrying...");
                 retryCount++;
+                // Every 5 retries, trigger a kernel 1-wire bus search to re-enumerate sensors
+                if (retryCount % 5 == 0) {
+                    triggerBusSearch();
+                }
                 try {
                     Thread.sleep(retryDelay); // Wait before retrying
                 } catch (InterruptedException e) {
@@ -62,5 +68,14 @@ public class TempSensor extends Thread {
             logger.error("Exception thrown from - " + sensorName + " - sensor, file: " + fileName + ": " + e.getMessage(), e);
         }
         return line;
+    }
+
+    private void triggerBusSearch() {
+        try (FileWriter fw = new FileWriter(W1_MASTER_SEARCH)) {
+            fw.write("1");
+            logger.info("Triggered 1-wire bus search to re-enumerate sensors");
+        } catch (Exception e) {
+            logger.warn("Could not trigger 1-wire bus search: " + e.getMessage());
+        }
     }
 }
